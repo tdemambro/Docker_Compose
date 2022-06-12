@@ -1,16 +1,24 @@
 filebeat.inputs:
 - type: httpjson
-  request.url: https://try.donordrive.com/api/participants/477670/donations
-
+  request.url: https://try.donordrive.com/api/participants/477670
   processors:
     - decode_json_fields:
         fields: ["message"]
         target: "json"
 
+setup.kibana:
+  host: "http://kb-container:5601"
+
 output.elasticsearch:
   hosts: ["http://es-container:9200"]
-  indices:
-    - index: "filebeat-%{[agent.version]}-%{+yyyy.MM.dd}"
 
 logging.json: true
 logging.metrics.enabled: false
+setup.dashboards.enabled: true
+network.host: 0.0.0.0
+
+filebeat.config.inputs:
+  enabled: true
+  path: configs/*.yml
+  reload.enabled: true
+  reload.period: 10s
